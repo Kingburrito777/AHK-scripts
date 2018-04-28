@@ -31,13 +31,13 @@ FN_Wall(){
 }
 
 ; cycle building materials
-; run while pressing q ! 
+; run while pressing q ! (better to bind to mouse)
 +q::
     key++                         ; this will help cycling through the keys depending on its value
     if (key == 1) {
-        FN_Stairs()
-    } else if (key == 2) {
         FN_Wall()
+    } else if (key == 2) {
+        FN_Stairs()
         key := 0
     }
     return
