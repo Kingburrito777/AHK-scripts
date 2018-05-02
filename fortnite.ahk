@@ -4,9 +4,11 @@ SetWorkingDir %A_ScriptDir%
 
 ; C:\Program Files\Epic Games\Fortnite\FortniteGame\Binaries\Win64\FortniteClient-Win64-Shipping.exe
 ; #IfWinActive,  FortniteClient-Win64-Shipping.exe   ;------------------------only works during fornite
-#IfWinActive, Fortnite
+; #IfWinActive, FORTNITECLIENT-WIN64-SHIPPING.exe
 
-build_time := 90    ; milliseconds
+build_time := 120    ; milliseconds
+wait_time := 60    ; milliseconds
+use_autobuilder:= #IfWinExist, Fortnite_Sichtsale_v1.1.exe
 
 CenterMouse(w, h) {
     center_x:=w/2
@@ -14,25 +16,69 @@ CenterMouse(w, h) {
     MouseMove,center_x,center_y
 }
 
-; builds fortnite stairs
+; The exe from https://www.mpgh.net/forum/showthread.php?t=1358341
+; Description: this exe requires building/running settings to be default
+    ; Build a wall with 1 keypress in less than a milisecond (key = Z)
+    ; Build a floor with 1 keypress in less than a milisecond (key = X)
+    ; Build some stairs with 1 keypress in less than a milisecond (key = C)
+    ; Automatically run with 1 keypress (key = V)
+autobuild(){
+    Send {z down}
+    Send {z up}
+    wait(0.85)  ; sec
+    Send {c down}
+    Send {c up}
+}
+
+; builds fortnite stairs (must be in build mode)
 FN_Stairs() {
     Send {F3 down}
     Send {F3 up}
+    Sleep %wait_time%
     MouseClick,Left
     Sleep %build_time%
 }
 
-; builds a fortnite wall
+; builds a fortnite wall (must be in build mode)
 FN_Wall(){
     Send {F1 down}
     Send {F1 up}
+    Sleep %wait_time%
     MouseClick,Left
     Sleep %build_time%
 }
 
++z::     ; Build mode
+    ; MouseClick, X2  ; X2 on my mouse (mouse button 5)
+    ; wait(0.2)
+    Send {LShift down}
+    Send {w down}
+    ; todo loop:
+    FN_Stairs()
+    wait(0.85)
+    FN_Wall()
+    Send {F3 down}
+    Send {F3 up}
+    ; wait(0.2)
+    ; MouseClick, X2
+return
+
+; double pump key g with ctrl or shift
+g::
+^g::
++g::
+    Send {2}
+    Sleep 500
+    MouseClick ,Left,X,Y,3,0
+    Send {3}
+    Sleep 500
+    MouseClick ,Left,X,Y,3,0
+return
+
 ; cycle building materials
-; run while pressing q ! (better to bind to mouse)
+; while pressing q (better to bind to mouse)
 +q::
+q::
     key++                         ; this will help cycling through the keys depending on its value
     if (key == 1) {
         FN_Wall()
@@ -40,14 +86,14 @@ FN_Wall(){
         FN_Stairs()
         key := 0
     }
-    return
+return
 
-; half sec between stairs and wall
+; wait a sec..
 wait(sec){
     Sleep sec*1000
 }
 
-; terrible output
+; terrible output, tried to build a fort *around* user
 l::
     WinGetPos,,, width, height,A
     ; CenterMouse(width, height)
@@ -68,32 +114,18 @@ return
 
 
 ; Fast mine (as of 4/27/2018)
-c::
+; PATCHED: (5/1/18)
+^c::
     Send {2 down}
     Send {2 up}
     Send {1 down}
     Send {1 up}
     Sleep 295
     Send {Click down}
-    Sleep 150
+    Sleep 16
     Send {Click up}
 return
 
-; Shift + Z (running + building macro)
-+z::     ; Build mode
-    ; MouseClick, X2  ; X2 on my mouse (mouse button 5)
-    ; wait(0.2)
-    Send {LShift down}
-    Send {w down}
-    ; todo loop:
-    FN_Stairs()
-    wait(0.85)
-    FN_Wall()
-    Send {F3 down}
-    Send {F3 up}
-    ; wait(0.2)
-    ; MouseClick, X2
-return
 
 
 
