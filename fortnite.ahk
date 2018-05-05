@@ -75,7 +75,7 @@ g::
     MouseClick ,Left,X,Y,3,0
 return
 
-; cycle building materials
+; cycle building materials, if you want this to slow down, add a 275ms delay every loop of Q
 ; while pressing q (better to bind to mouse)
 +q::
 q::
